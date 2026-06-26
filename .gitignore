@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+build
+
+# Variables d'environnement
+.env
+.env.local
+.env*.local
+
+# Photos uploadées en local
+/data
+
+# Divers
+*.log
+.DS_Store
