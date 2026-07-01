@@ -1,5 +1,13 @@
 import { desc } from 'drizzle-orm'
 import Link from 'next/link'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { db } from '@/lib/db'
 import { albums } from '@/lib/schema'
 import AlbumForm from './AlbumForm'
@@ -37,29 +45,43 @@ export default async function Admin() {
       <section className="space-y-3">
         <h2 className="text-lg font-light">Albums ({list.length})</h2>
         {list.length === 0 ? (
-          <p className="text-sm text-neutral-400">Aucun album.</p>
+          <p className="text-sm text-muted-foreground">Aucun album.</p>
         ) : (
-          <ul className="divide-y divide-neutral-100 text-sm">
-            {list.map((a) => (
-              <li key={a.id} className="flex items-center gap-3 py-2">
-                <Link href={`/admin/albums/${a.slug}`} className="underline">
-                  {a.title}
-                </Link>
-                <span className="text-neutral-400">/{a.slug}</span>
-                <span
-                  className={a.isPublic ? 'text-green-600' : 'text-neutral-400'}
-                >
-                  {a.isPublic ? 'public' : 'privé'}
-                </span>
-                <Link
-                  href={`/admin/albums/${a.slug}`}
-                  className="ml-auto text-neutral-500 hover:underline"
-                >
-                  gérer
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Titre</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Statut</TableHead>
+                <TableHead className="text-right">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {list.map((a) => (
+                <TableRow key={a.id}>
+                  <TableCell>
+                    <Link href={`/admin/albums/${a.slug}`} className="underline">
+                      {a.title}
+                    </Link>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">/{a.slug}</TableCell>
+                  <TableCell
+                    className={a.isPublic ? 'text-green-600' : 'text-muted-foreground'}
+                  >
+                    {a.isPublic ? 'public' : 'privé'}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Link
+                      href={`/admin/albums/${a.slug}`}
+                      className="text-muted-foreground hover:underline"
+                    >
+                      gérer
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </section>
     </main>

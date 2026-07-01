@@ -1,6 +1,7 @@
 import { asc, eq } from 'drizzle-orm'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Card, CardContent } from '@/components/ui/card'
 import { db } from '@/lib/db'
 import { albums, photos } from '@/lib/schema'
 
@@ -41,26 +42,30 @@ export default async function AlbumsPage() {
       <h1 className="mb-8 text-3xl font-light tracking-tight">Albums</h1>
 
       {withCovers.length === 0 ? (
-        <p className="text-neutral-400">Aucun album public pour l’instant.</p>
+        <p className="text-muted-foreground">Aucun album public pour l’instant.</p>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {withCovers.map((a) => (
             <Link key={a.id} href={`/albums/${a.slug}`} className="group block">
-              <div className="aspect-[4/3] overflow-hidden rounded-lg bg-neutral-100">
-                {a.cover && (
-                  <Image
-                    src={`/images/${a.cover.storageKey}/thumb.webp`}
-                    alt=""
-                    width={a.cover.width}
-                    height={a.cover.height}
-                    placeholder="blur"
-                    blurDataURL={a.cover.blurDataUrl}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                  />
-                )}
-              </div>
-              <h2 className="mt-2 text-lg font-light">{a.title}</h2>
+              <Card className="gap-0 py-0 transition hover:ring-foreground/20">
+                <div className="aspect-[4/3] overflow-hidden bg-muted">
+                  {a.cover && (
+                    <Image
+                      src={`/images/${a.cover.storageKey}/thumb.webp`}
+                      alt=""
+                      width={a.cover.width}
+                      height={a.cover.height}
+                      placeholder="blur"
+                      blurDataURL={a.cover.blurDataUrl}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                    />
+                  )}
+                </div>
+                <CardContent className="py-3">
+                  <h2 className="text-lg font-light">{a.title}</h2>
+                </CardContent>
+              </Card>
             </Link>
           ))}
         </div>

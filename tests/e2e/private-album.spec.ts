@@ -19,9 +19,8 @@ test('album privé : anonyme redirigé, client connecté, favori persistant, ZIP
     page.getByRole('link', { name: 'Privé E2E', exact: true }),
   ).toBeVisible()
 
-  await page
-    .locator('select[name="albumId"]')
-    .selectOption({ label: 'Album : Privé E2E' })
+  await page.getByRole('combobox').click()
+  await page.getByRole('option', { name: 'Album : Privé E2E' }).click()
   await page.locator('input[name="files"]').setInputFiles({
     name: 'p.jpg',
     mimeType: 'image/jpeg',
@@ -40,7 +39,7 @@ test('album privé : anonyme redirigé, client connecté, favori persistant, ZIP
 
   // Rendre privé (DOM frais)
   await page.goto('/admin/albums/prive-e2e')
-  await page.locator('input[name="isPublic"]').uncheck()
+  await page.getByRole('checkbox', { name: 'Public' }).click()
   await Promise.all([
     waitPost(page),
     page.getByRole('button', { name: 'Enregistrer', exact: true }).click(),

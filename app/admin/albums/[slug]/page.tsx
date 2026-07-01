@@ -4,6 +4,10 @@ import { notFound } from 'next/navigation'
 import { setAlbumAccess, setAlbumPassword, updateAlbum } from '@/app/admin/actions'
 import DeleteAlbumButton from '@/components/DeleteAlbumButton'
 import PhotoManager from '@/components/PhotoManager'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { db } from '@/lib/db'
 import { albums, clients, photos, selections } from '@/lib/schema'
 
@@ -66,22 +70,12 @@ export default async function ManageAlbum({
       <section className="space-y-3">
         <h1 className="text-2xl font-light">Album : {album.title}</h1>
         <form action={updateAlbum.bind(null, album.id)} className="space-y-3">
-          <input
-            name="title"
-            defaultValue={album.title}
-            required
-            className="block w-full rounded border border-neutral-300 px-3 py-2 text-sm"
-          />
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="isPublic" defaultChecked={album.isPublic} />
+          <Input name="title" defaultValue={album.title} required />
+          <Label className="font-normal">
+            <Checkbox name="isPublic" defaultChecked={album.isPublic} />
             Public
-          </label>
-          <button
-            type="submit"
-            className="rounded bg-black px-4 py-2 text-sm text-white"
-          >
-            Enregistrer
-          </button>
+          </Label>
+          <Button type="submit">Enregistrer</Button>
         </form>
       </section>
 
@@ -97,31 +91,26 @@ export default async function ManageAlbum({
           )}
         </p>
         <form action={setAlbumAccess.bind(null, album.id)} className="space-y-3">
-          <label className="block text-sm">
-            <span className="text-neutral-600">E-mail du client</span>
-            <input
+          <div className="space-y-1.5">
+            <Label htmlFor="clientEmail">E-mail du client</Label>
+            <Input
+              id="clientEmail"
               type="email"
               name="clientEmail"
               defaultValue={clientEmail}
               placeholder="client@exemple.com (vide = aucun)"
-              className="mt-1 block w-full rounded border border-neutral-300 px-3 py-2 text-sm"
             />
-          </label>
-          <label className="block text-sm">
-            <span className="text-neutral-600">Expire le</span>
-            <input
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="expiresAt">Expire le</Label>
+            <Input
+              id="expiresAt"
               type="date"
               name="expiresAt"
               defaultValue={expiresValue}
-              className="mt-1 block w-full rounded border border-neutral-300 px-3 py-2 text-sm"
             />
-          </label>
-          <button
-            type="submit"
-            className="rounded bg-black px-4 py-2 text-sm text-white"
-          >
-            Enregistrer l’accès
-          </button>
+          </div>
+          <Button type="submit">Enregistrer l’accès</Button>
         </form>
 
         <div className="border-t border-neutral-100 pt-4">
@@ -133,22 +122,14 @@ export default async function ManageAlbum({
             action={setAlbumPassword.bind(null, album.id)}
             className="space-y-2"
           >
-            <input
-              type="text"
-              name="password"
-              placeholder="Nouveau mot de passe"
-              className="block w-full rounded border border-neutral-300 px-3 py-2 text-sm"
-            />
-            <label className="flex items-center gap-2 text-sm text-neutral-600">
-              <input type="checkbox" name="remove" />
+            <Input type="text" name="password" placeholder="Nouveau mot de passe" />
+            <Label className="font-normal text-neutral-600">
+              <Checkbox name="remove" />
               Supprimer le mot de passe
-            </label>
-            <button
-              type="submit"
-              className="rounded border border-neutral-300 px-4 py-2 text-sm"
-            >
+            </Label>
+            <Button type="submit" variant="outline">
               Enregistrer le mot de passe
-            </button>
+            </Button>
           </form>
         </div>
       </section>

@@ -18,9 +18,8 @@ test('album protégé par mot de passe : mauvais puis bon mot de passe', async (
     page.getByRole('link', { name: 'Motdepasse E2E', exact: true }),
   ).toBeVisible()
 
-  await page
-    .locator('select[name="albumId"]')
-    .selectOption({ label: 'Album : Motdepasse E2E' })
+  await page.getByRole('combobox').click()
+  await page.getByRole('option', { name: 'Album : Motdepasse E2E' }).click()
   await page.locator('input[name="files"]').setInputFiles({
     name: 'm.jpg',
     mimeType: 'image/jpeg',
@@ -31,7 +30,7 @@ test('album protégé par mot de passe : mauvais puis bon mot de passe', async (
 
   // Rendre privé
   await page.goto('/admin/albums/motdepasse-e2e')
-  await page.locator('input[name="isPublic"]').uncheck()
+  await page.getByRole('checkbox', { name: 'Public' }).click()
   await Promise.all([
     waitPost(page),
     page.getByRole('button', { name: 'Enregistrer', exact: true }).click(),

@@ -13,9 +13,8 @@ test('album public : upload via l’UI, galerie, lightbox et téléchargement ZI
   ).toBeVisible()
 
   // 2) Uploader une photo dans cet album
-  await page
-    .locator('select[name="albumId"]')
-    .selectOption({ label: 'Album : Public E2E' })
+  await page.getByRole('combobox').click()
+  await page.getByRole('option', { name: 'Album : Public E2E' }).click()
   await page
     .locator('input[name="files"]')
     .setInputFiles({ name: 'a.jpg', mimeType: 'image/jpeg', buffer: await sampleJpeg() })

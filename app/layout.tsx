@@ -1,8 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { logout } from '@/app/login/actions'
+import { Button } from '@/components/ui/button'
+import { Toaster } from '@/components/ui/sonner'
 import { getSession } from '@/lib/auth'
 import './globals.css'
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: 'Portfolio',
@@ -17,8 +23,8 @@ export default async function RootLayout({
   const session = await getSession()
 
   return (
-    <html lang="fr">
-      <body className="bg-white text-neutral-900 antialiased">
+    <html lang="fr" className={cn("font-sans", geist.variable)}>
+      <body className="bg-background text-foreground antialiased">
         <nav className="border-b border-neutral-100">
           <div className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-4 text-sm">
             <Link href="/" className="hover:underline">
@@ -34,9 +40,13 @@ export default async function RootLayout({
                   Mes albums
                 </Link>
                 <form action={logout}>
-                  <button type="submit" className="text-neutral-400 hover:underline">
+                  <Button
+                    type="submit"
+                    variant="link"
+                    className="h-auto p-0 text-muted-foreground"
+                  >
                     Déconnexion
-                  </button>
+                  </Button>
                 </form>
               </>
             ) : (
@@ -53,6 +63,7 @@ export default async function RootLayout({
           </div>
         </nav>
         {children}
+        <Toaster />
       </body>
     </html>
   )

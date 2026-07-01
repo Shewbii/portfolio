@@ -1,31 +1,48 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type AlbumOption = { id: string; title: string };
 
+// Radix Select interdit une valeur vide sur un item : on utilise une sentinelle
+// pour « Portfolio » qu'on retraduit en champ vide avant l'envoi.
+const PORTFOLIO = "portfolio";
+
 export default function Uploader({ albums }: { albums: AlbumOption[] }) {
-  const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [albumId, setAlbumId] = useState(PORTFOLIO);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formEl = e.currentTarget;
     const data = new FormData(formEl);
+    data.set("albumId", albumId === PORTFOLIO ? "" : albumId);
     setBusy(true);
-    setStatus("Envoi en cours…");
+    const toastId = toast.loading("Envoi en cours…");
     try {
       const res = await fetch("/api/upload", { method: "POST", body: data });
-      setStatus(res.ok ? "Photo ajoutée." : "Erreur lors de l’upload.");
       if (res.ok) {
+        toast.success("Photo ajoutée.", { id: toastId });
         // on vide juste le fichier, on garde l'album sélectionné (upload en série)
         const fileInput = formEl.elements.namedItem(
-          "file",
+          "files",
         ) as HTMLInputElement | null;
         if (fileInput) fileInput.value = "";
+      } else {
+        toast.error("Erreur lors de l’upload.", { id: toastId });
       }
     } catch {
-      setStatus("Erreur réseau.");
+      toast.error("Erreur réseau.", { id: toastId });
     } finally {
       setBusy(false);
     }
@@ -33,34 +50,23 @@ export default function Uploader({ albums }: { albums: AlbumOption[] }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <select
-        name="albumId"
-        defaultValue=""
-        className="block w-full rounded border border-neutral-300 px-3 py-2 text-sm"
-      >
-        <option value="">Portfolio (page d’accueil)</option>
-        {albums.map((a) => (
-          <option key={a.id} value={a.id}>
-            Album : {a.title}
-          </option>
-        ))}
-      </select>
-      <input
-        type="file"
-        name="files"
-        accept="image/*"
-        required
-        className="block w-full text-sm"
-        multiple
-      />
-      <button
-        type="submit"
-        disabled={busy}
-        className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-      >
+      <Select value={albumId} onValueChange={setAlbumId}>
+        <SelectTrigger className="w-full">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={PORTFOLIO}>Portfolio (page d’accueil)</SelectItem>
+          {albums.map((a) => (
+            <SelectItem key={a.id} value={a.id}>
+              Album : {a.title}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Input type="file" name="files" accept="image/*" required multiple />
+      <Button type="submit" disabled={busy}>
         Uploader
-      </button>
-      <p className="text-sm text-neutral-500">{status}</p>
+      </Button>
     </form>
   );
 }

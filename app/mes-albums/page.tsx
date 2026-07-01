@@ -2,6 +2,7 @@ import { and, asc, eq, gt, isNull, or } from 'drizzle-orm'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { Card, CardContent } from '@/components/ui/card'
 import { getSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { albums, clients, photos } from '@/lib/schema'
@@ -56,35 +57,41 @@ export default async function MyAlbums() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-12">
       <h1 className="mb-1 text-3xl font-light tracking-tight">Mes albums</h1>
-      <p className="mb-8 text-sm text-neutral-500">{client.email}</p>
+      <p className="mb-8 text-sm text-muted-foreground">{client.email}</p>
 
       {withCovers.length === 0 ? (
-        <p className="text-neutral-400">Aucun album disponible pour le moment.</p>
+        <p className="text-muted-foreground">
+          Aucun album disponible pour le moment.
+        </p>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {withCovers.map((a) => (
             <Link key={a.id} href={`/albums/${a.slug}`} className="group block">
-              <div className="aspect-[4/3] overflow-hidden rounded-lg bg-neutral-100">
-                {a.cover && (
-                  <Image
-                    src={`/images/${a.cover.storageKey}/thumb.webp`}
-                    alt=""
-                    width={a.cover.width}
-                    height={a.cover.height}
-                    placeholder="blur"
-                    blurDataURL={a.cover.blurDataUrl}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                  />
-                )}
-              </div>
-              <h2 className="mt-2 text-lg font-light">{a.title}</h2>
-              {a.expiresAt && (
-                <p className="text-xs text-neutral-400">
-                  Disponible jusqu’au{' '}
-                  {a.expiresAt.toLocaleDateString('fr-FR')}
-                </p>
-              )}
+              <Card className="gap-0 py-0 transition hover:ring-foreground/20">
+                <div className="aspect-[4/3] overflow-hidden bg-muted">
+                  {a.cover && (
+                    <Image
+                      src={`/images/${a.cover.storageKey}/thumb.webp`}
+                      alt=""
+                      width={a.cover.width}
+                      height={a.cover.height}
+                      placeholder="blur"
+                      blurDataURL={a.cover.blurDataUrl}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                    />
+                  )}
+                </div>
+                <CardContent className="py-3">
+                  <h2 className="text-lg font-light">{a.title}</h2>
+                  {a.expiresAt && (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Disponible jusqu’au{' '}
+                      {a.expiresAt.toLocaleDateString('fr-FR')}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
             </Link>
           ))}
         </div>

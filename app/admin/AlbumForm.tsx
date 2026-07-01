@@ -1,6 +1,10 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { createAlbum } from './actions'
 
 export default function AlbumForm() {
@@ -21,23 +25,14 @@ export default function AlbumForm() {
       }}
       className="space-y-3"
     >
-      <input
-        name="title"
-        placeholder="Titre de l’album"
-        required
-        className="block w-full rounded border border-neutral-300 px-3 py-2 text-sm"
-      />
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="isPublic" defaultChecked />
+      <Input name="title" placeholder="Titre de l’album" required />
+      <Label className="font-normal">
+        <Checkbox name="isPublic" defaultChecked />
         Public (visible dans la liste des albums)
-      </label>
-      <button
-        type="submit"
-        disabled={busy}
-        className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-      >
+      </Label>
+      <Button type="submit" disabled={busy}>
         Créer l’album
-      </button>
+      </Button>
     </form>
   )
 }
