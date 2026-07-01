@@ -32,6 +32,21 @@ npm run dev                 # http://localhost:3000
 Les photos sont écrites dans `STORAGE_DIR` (`./data/photos` par défaut) et servies via
 la route `/images/<key>/<variant>`.
 
+## Tests
+
+Trois couches, du plus rapide au plus complet :
+
+```bash
+npm test              # unitaires (sécurité pure : jetons, accès, mot de passe, slug)
+npm run test:integration   # Server Actions contre une vraie base (photos_test)
+npm run test:e2e      # Playwright : parcours navigateur (photos_e2e + serveur sur :3100)
+```
+
+- Les tests d'intégration et E2E utilisent des bases (`photos_test`, `photos_e2e`) et un
+  stockage (`./data/test-photos`, `./data/e2e-photos`) **séparés** de la dev — jamais tes données.
+- Ils créent la base et appliquent le schéma automatiquement (Postgres doit tourner).
+- E2E requiert le navigateur : `npx playwright install chromium` une fois.
+
 ## Architecture des images
 
 - À l'upload, `lib/images.ts` génère : `original`, `web.webp` (2000px), `thumb.webp` (600px)

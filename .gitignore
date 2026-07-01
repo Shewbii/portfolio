@@ -11,6 +11,11 @@ build
 # Photos uploadées en local
 /data
 
+# Tests
+/playwright-report
+/test-results
+/.playwright
+
 # Divers
 *.log
 .DS_Store
